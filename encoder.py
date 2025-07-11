@@ -2,50 +2,35 @@ import os
 from PIL import Image
 import numpy as np
 
-def read_reconstructed_images():
-    """
-    Read all images from the reconstructed_images_greyscale directory
-    """
-    # Path to the directory containing reconstructed images
-    image_dir_path = "/Users/javierfriedman/Desktop/Research/reconstructed_images_greyscale"
+import torch
+import torch.nn as nn
+import torch.optim as optim
+import matplotlib.pyplot as plt
 
-    image_dir = os.listdir(image_dir_path)
+import torch
+from torchvision import datasets, transforms
+from torch.utils.data import DataLoader
+
+from autoEncoder import Autoencoder
+from preProcess import read_reconstructed_images
 
 
-    
+# Define transform to resize and normalize grayscale images
+transform = transforms.Compose([
+    transforms.ToTensor(),  # Converts to [0,1] and shape (1, 84, 84)
+])
 
-    
-    # Loop through each image file
-    counter = 0
-    for filename in image_dir:
-        print(filename)
-        if counter > 10:
-            break
-        file_path = os.path.join(image_dir_path, filename)
+image_dir_path = "/Users/javierfriedman/Desktop/Research/reconstructed_images_greyscale"
 
-        print(file_path)
-        
-        try:
-            # Open and read the image
-            with Image.open(file_path) as img:
+# Replace 'my_data/' with your actual image directory path
+dataset = datasets.ImageFolder(root=image_dir_path, transform=transform)
 
-                # # Convert to numpy array
-                img_array = np.array(img)
-                print(img_array)
-                
-       
-                # Here you can add your processing logic for each image
-                # For example, you might want to:
-                # - Resize the image
-                # - Normalize pixel values
-                # - Apply encoding/decoding operations
-                # - Save processed images
-                
-        except Exception as e:
-            print(f"Error reading {filename}: {e}")
-            break
+# Create DataLoader
+dataloader = DataLoader(dataset, batch_size=64, shuffle=True)
 
-        counter += 1
 
 if __name__ == "__main__":
     read_reconstructed_images()
+    model = Autoencoder()
+    criterion = nn.MSELoss()
+    optimizer = torch.optim.Adam(model.parameters(), lr=0.001, weight_decay=1e-5)
