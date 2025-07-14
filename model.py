@@ -4,11 +4,11 @@ import torch.optim as optim
 import matplotlib.pyplot as plt
 
 
-class Autoencoder:
+class Autoencoder(nn.Module):
     def __init__(self):
-        super().__init__()
+        super(Autoencoder, self).__init__()
         self.encoder = nn.Sequential(
-            nn.Linear(84*84, 128), # reduce N, 7068 -> N,128
+            nn.Linear(84*84, 128), # reduce N, 7056 -> N,128
             nn.ReLU(),
             nn.Linear(128, 64), 
             nn.ReLU(),
@@ -24,6 +24,7 @@ class Autoencoder:
             nn.ReLU(),
             nn.Linear(64, 128),
             nn.ReLU(),
+            nn.Linear(128, 84*84),  # Add missing final layer
             nn.Sigmoid(),
            
         )
