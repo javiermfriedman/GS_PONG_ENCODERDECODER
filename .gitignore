@@ -2,3 +2,15 @@
 __pycache__/
 
 encoder_venv/
+
+Model_1/trained_autoencoder.pth
+Model_1/pycache/
+
+model_2/pycache/
+model_2/trained_autoencoder.pth
+
+model_3/pycache/
+model_3/trained_autoencoder.pth
+
+
+Autoencoder_data/

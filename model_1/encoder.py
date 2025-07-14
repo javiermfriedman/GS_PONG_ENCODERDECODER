@@ -1,6 +1,9 @@
 """
+this
 Autoencoder training script for image reconstruction using PyTorch.
 This script trains an autoencoder on grayscale images and saves the model with training metrics.
+this is the preliminary model for the encoder doesn't work well
+only used linear layer
 """
 import os
 from PIL import Image
@@ -23,7 +26,7 @@ print("=== Fetching Data ===")
 transform = transforms.Compose([
     transforms.ToTensor(),  # Converts to [0,1] and shape (1, 84, 84)
 ])
-image_dir_path = "/Users/javierfriedman/Desktop/Research/Autoencoder_data"
+image_dir_path = "/Users/javierfriedman/Desktop/Research/EncoderDecoder_pong_greyscale/Autoencoder_data"
 dataset = datasets.ImageFolder(root=image_dir_path, transform=transform)
 dataloader = DataLoader(dataset, batch_size=32, shuffle=True)
 
@@ -33,6 +36,7 @@ model = Autoencoder()
 criterion = nn.MSELoss()
 optimizer = torch.optim.Adam(model.parameters(), lr=0.001, weight_decay=1e-5)
 print("✓ Model initialized successfully")
+
 
 print("\n=== Starting Training Process ===")
 num_epochs = 5
