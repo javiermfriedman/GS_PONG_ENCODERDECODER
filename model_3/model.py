@@ -13,7 +13,7 @@ import torch
 import torch.nn as nn
 
 class Autoencoder(nn.Module):
-    def __init__(self, latent_dim=32):
+    def __init__(self, latent_dim=256):
         super(Autoencoder, self).__init__()
         
         # Encoder
