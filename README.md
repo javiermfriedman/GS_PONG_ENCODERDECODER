@@ -10,3 +10,7 @@ model 1 does not reconstruct well at all
 
 use this repo as inspo
 https://github.com/patrickloeber/pytorch-examples/blob/master/Autoencoder.ipynb
+
+it is working now I lowered the amount of input data to prevent underfittings
+
+and I also used a different architecutre
