@@ -7,7 +7,7 @@ class ConvAutoencoder(torch.nn.Module):
     Encoder compresses the image; decoder reconstructs it.
     Uses a configurable latent vector bottleneck.
     """
-    LATENT_DIM = 18  # Latent vector size as a class constant
+    LATENT_DIM = 16  # Latent vector size as a class constant
 
     def __init__(self):
         super(ConvAutoencoder, self).__init__()
