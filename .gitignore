@@ -5,12 +5,11 @@ Autoencoder_data/
 
 encoder_venv/
 
-Model_1/trained_autoencoder.pth
+# Ignore all .pth files
+*.pth
 
-model_2/trained_autoencoder.pth
-
-model_10_beta/32_dim_model/models/
-model_10_beta/64_dim_model/models/
+# Un-ignore the specific best model
+!/model_10_beta/128_dim_models/models/fine_tune_2_best_model_epoch4_valloss=0.000042.pth
 
 
 
