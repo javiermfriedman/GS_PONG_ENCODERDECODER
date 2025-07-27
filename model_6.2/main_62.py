@@ -4,7 +4,9 @@ from torch.utils.data import DataLoader, random_split # Added random_split
 from torchvision import transforms, datasets
 from PIL import Image
 import matplotlib.pyplot as plt
-from model import ConvAutoencoder
+from torch.optim.lr_scheduler import ReduceLROnPlateau  # added for learning rate scheduler
+from model62_ import ConvAutoencoderRegularized
+
 
 # -------- Main Training & Visualization --------
 def main():
@@ -30,18 +32,30 @@ def main():
     print(f"Validation set size: {len(val_dataset)}")
     
     # Create separate DataLoaders
-    train_loader = DataLoader(train_dataset, batch_size=32, shuffle=True)
-    val_loader = DataLoader(val_dataset, batch_size=32, shuffle=False)
+    train_loader = DataLoader(train_dataset, batch_size=64, shuffle=True)
+    val_loader = DataLoader(val_dataset, batch_size=64, shuffle=False)
 
-    print("Initializing model...")
-    model = ConvAutoencoder() 
-    optimizer = torch.optim.Adam(model.parameters(), lr=1e-3, weight_decay=1e-5) # Added weight_decay for regularization
-    criterion = torch.nn.MSELoss()
+    print("Initializing model ---> 6.2 <----- ...")
+    model = ConvAutoencoderRegularized() 
+    
+    # --- CHANGE 1: Lower the learning rate ---
+    optimizer = torch.optim.Adam(model.parameters(), lr=1e-4, weight_decay=1e-5) # Original was 1e-3
+    
+    scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(
+        optimizer,
+        mode='min',
+        factor=0.5,
+        patience=2
+    )
+
+    # --- CHANGE 2: Switch to BCEWithLogitsLoss ---
+    criterion = torch.nn.BCEWithLogitsLoss() # Original was L1Loss
+
     
     # Lists to store loss history for plotting
     train_losses = []
     val_losses = []
-    num_epochs = 15
+    num_epochs = 20
 
     # --- 2. Training & Validation Loop ---
     print("Starting training...")
@@ -71,13 +85,18 @@ def main():
 
         epoch_val_loss = running_val_loss / len(val_loader)
         val_losses.append(epoch_val_loss)
+        scheduler.step(epoch_val_loss)
+
+        # print current learning rate
+        for param_group in optimizer.param_groups:
+            print(f"Current LR: {param_group['lr']}")
         
         print(f"Epoch {epoch+1}/{num_epochs} -> Train Loss: {epoch_train_loss:.4f}, Validation Loss: {epoch_val_loss:.4f}")
 
     print("Training complete saving model...")
-    model_path = "/Users/javierfriedman/Desktop/Research/EncoderDecoder_pong_greyscale/model_6/model_lat_16.pth"
-    torch.save(model.state_dict(), model_path)
-    print(f"Model saved to {model_path}")
+    # model_path = "/Users/javierfriedman/Desktop/Research/EncoderDecoder_pong_greyscale/model_6/model_lat_16.pth"
+    # torch.save(model.state_dict(), model_path)
+    # print(f"Model saved to {model_path}")
 
     # --- 3. Reconstruct and Visualize (using validation data) ---
     print("Reconstructing images from validation set...")
@@ -86,7 +105,8 @@ def main():
     # Get 10 images from the validation dataset to see performance on unseen data
     inputs = torch.stack([val_dataset[i][0] for i in range(10)])
     with torch.no_grad():
-        recons = model(inputs)
+        # Because we removed Sigmoid from the model, we apply it here for visualization
+        recons = torch.sigmoid(model(inputs))
 
     inputs = inputs.numpy()
     recons = recons.numpy()
@@ -101,7 +121,7 @@ def main():
     axes[0, 0].set_ylabel('Original')
     axes[1, 0].set_ylabel('Reconstructed')
     plt.tight_layout()
-    plt.savefig("/Users/javierfriedman/Desktop/Research/EncoderDecoder_pong_greyscale/model_6/reconstruction_results_lat_16.png")
+    plt.savefig("/Users/javierfriedman/Desktop/Research/EncoderDecoder_pong_greyscale/model_6.2/validation_reconstruction.png")
     
     # --- 4. Plot Loss Curves ---
     print("Plotting loss curves...")
@@ -113,7 +133,7 @@ def main():
     plt.ylabel('Loss')
     plt.legend()
     plt.grid(True)
-    plt.savefig("/Users/javierfriedman/Desktop/Research/EncoderDecoder_pong_greyscale/model_6/loss_plot.png")
+    plt.savefig("/Users/javierfriedman/Desktop/Research/EncoderDecoder_pong_greyscale/model_6.2/loss_plot.png")
     plt.show()
 
 if __name__ == "__main__":

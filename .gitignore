@@ -1,25 +1,16 @@
 .DS_Store
 __pycache__/
 
+Autoencoder_data/
+
 encoder_venv/
 
 Model_1/trained_autoencoder.pth
-Model_1/pycache/
 
-model_2/pycache/
 model_2/trained_autoencoder.pth
 
-model_3/pycache/
-model_3/trained_autoencoder.pth
-
-model_4/pycache/
-
-model_5/pycache/
-
-model_6/pycache/
-
-model_7/pycache/
+model_10_beta/32_dim_model/models/
+model_10_beta/64_dim_model/models/
 
 
 
-Autoencoder_data/

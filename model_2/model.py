@@ -1,3 +1,5 @@
+# Model 2 — Basic Autoencoder with Small Latent Space
+
 import torch
 import torch.nn as nn
 

@@ -1,3 +1,7 @@
+"""
+it didn't test validation set. it overfits
+"""
+
 import os
 import torch
 from torch.utils.data import DataLoader
